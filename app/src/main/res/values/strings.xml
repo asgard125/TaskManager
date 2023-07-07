@@ -2,4 +2,7 @@
     <string name="app_name">My Application</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="create">create</string>
+    <string name="task_description">task description</string>
+    <string name="task_name">task name</string>
 </resources>

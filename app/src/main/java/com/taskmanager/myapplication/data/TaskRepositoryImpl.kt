@@ -8,16 +8,6 @@ class TaskRepositoryImpl(private val taskDao: TaskDao) : TaskRepository {
 
     private val mapper = Mapper()
 
-//    init {
-//        GlobalScope.launch {
-//            for (i in 0..10) {
-//                addTask(Task("NAME $i", "test", i+1))
-//                addTask(Task("NAgdfgsdgsgME $i", "test", i+1))
-//            }
-//
-//        }
-//    }
-
     override suspend fun addTask(task: Task) {
         taskDao.addTask(mapper.taskToTaskEntity(task))
     }

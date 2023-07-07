@@ -30,4 +30,10 @@ class MainViewModel: ViewModel() {
             taskLists.postValue(getAllTaskListUseCase.execute())
         }
     }
+
+    fun getTaskList(id: Int){
+        viewModelScope.launch {
+            taskLists.postValue(getAllTaskListUseCase.execute())
+        }
+    }
 }
