@@ -9,5 +9,7 @@ data class TaskEntity(
     val id: Int,
     val name: String,
     val description: String,
-    val taskListId: Int
+    val taskListId: Int,
+    val favorite: Boolean,
+    val completed: Boolean
 )

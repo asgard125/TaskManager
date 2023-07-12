@@ -11,12 +11,11 @@ class Mapper {
     }
 
 
-
     fun taskToTaskEntity(task: Task): TaskEntity {
-        return TaskEntity(task.id, task.name, task.description, task.taskListId)
+        return TaskEntity(task.id, task.name, task.description, task.taskListId, task.favorite, task.completed)
     }
 
     fun taskEntityToTask(task: TaskEntity): Task {
-        return Task(task.name, task.description, task.taskListId, task.id)
+        return Task(task.name, task.description, task.taskListId, task.id, task.favorite, task.completed)
     }
 }

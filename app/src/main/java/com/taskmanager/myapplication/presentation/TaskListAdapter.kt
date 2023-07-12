@@ -1,37 +1,67 @@
 package com.taskmanager.myapplication.presentation
 
+import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import androidx.recyclerview.widget.RecyclerView
 import com.taskmanager.myapplication.R
+import com.taskmanager.myapplication.databinding.FragmentTaskBinding
 import com.taskmanager.myapplication.domain.models.Task
 
-class TaskListAdapter : ListAdapter<Task, TaskListAdapter.MyViewHolder>(MyDiffUtil()) {
+class TaskListAdapter(private val hostListener: TaskListAdapterListener) : RecyclerView.Adapter<TaskListAdapter.TaskViewHolder>()  {
+    private var tasksList: MutableList<Task> = mutableListOf()
+    inner class TaskViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val binding = FragmentTaskBinding.bind(view)
+        fun bind(task: Task) {
+                binding.apply {
+                    taskName.text = task.name
+                    if (task.completed) {
+                        favoriteButton.setImageResource(R.drawable.baseline_white_star_24)
+                    } else {
+                        favoriteButton.setImageResource(R.drawable.baseline_white_star_border_24)
+                    }
+                    completeCheckbox.isChecked = task.completed
+                    completeCheckbox.setOnClickListener {
+                        task.completed = !task.completed
+                        hostListener.onChanged(task)
+                    }
 
-    class MyViewHolder(view: View) : ViewHolder(view) {
-        val name = view.findViewById<TextView>(R.id.name)
-    }
+                    favoriteButton.setOnClickListener {
+                        task.favorite = !task.favorite
+                        hostListener.onChanged(task)
+                    }
 
-    class MyDiffUtil : DiffUtil.ItemCallback<Task>() {
-        override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
-            return oldItem.id == newItem.id
+                    deleteButton.setOnClickListener {
+                        hostListener.onDelete(task)
+                    }
+
+                    root.setOnClickListener {
+                        hostListener.onClick(task.id)
+                    }
+                }
         }
-
-        override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
-            return oldItem == newItem
-        }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.task_layout, parent, false)
-        return MyViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_task, parent, false)
+        return TaskViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.name.text = currentList[position].name
+    override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
+        holder.bind(tasksList[position])
+    }
+
+    override fun getItemCount(): Int {
+        return tasksList.size
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateData(newTasksList:List<Task>){
+        Log.d("data updated", "data updated")
+        tasksList = newTasksList.toMutableList()
+        notifyDataSetChanged()
     }
 }

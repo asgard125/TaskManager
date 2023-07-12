@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/grey"
     tools:ignore="ExtraText">
-    tools:context=".presentation.TaskActivity">
+    tools:context=".presentation.MainActivity">
 
     <EditText
         android:id="@+id/taskTitle"
@@ -33,7 +33,7 @@
             android:layout_weight="1"/>
 
         <Button
-            android:id="@+id/createButton"
+            android:id="@+id/create_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/create"

@@ -13,11 +13,32 @@ class TaskListViewModel : ViewModel() {
 
     private val taskRepository = Dependencies.taskRepository
 
-
+    fun getAllTasks(){
+        viewModelScope.launch {
+            list.postValue(taskRepository.getAllTasks())
+        }
+    }
 
     fun getTasksFromTaskList(id: Int) {
         viewModelScope.launch {
             list.postValue(taskRepository.getTasksFromTaskList(id))
+        }
+    }
+
+    fun getFavoriteTasks() {
+        viewModelScope.launch {
+            list.postValue(taskRepository.getFavoriteTasks())
+        }
+    }
+    fun changeTask(){
+        viewModelScope.launch {
+            list.postValue(taskRepository.getFavoriteTasks())
+        }
+    }
+
+    fun deleteTask(task: Task){
+        viewModelScope.launch {
+            taskRepository.deleteTask(task)
         }
     }
 }

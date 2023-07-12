@@ -15,11 +15,19 @@ class TaskRepositoryImpl(private val taskDao: TaskDao) : TaskRepository {
     override suspend fun deleteTask(task: Task) {
         taskDao.deleteTask(mapper.taskToTaskEntity(task))
     }
-
+    override suspend fun getAllTasks(): List<Task>{
+    return taskDao.getAllTasks().map {
+        mapper.taskEntityToTask(it)
+        }
+    }
     override suspend fun getTasksFromTaskList(id: Int): List<Task> {
         return taskDao.getTasksFromTaskList(id).map {
             mapper.taskEntityToTask(it)
         }
     }
-
+    override suspend fun getFavoriteTasks(): List<Task> {
+        return taskDao.getFavoriteTasks().map {
+            mapper.taskEntityToTask(it)
+        }
+    }
 }

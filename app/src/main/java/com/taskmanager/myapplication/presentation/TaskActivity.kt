@@ -4,28 +4,33 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.taskmanager.myapplication.databinding.ActivityTaskBinding
+import com.taskmanager.myapplication.databinding.DialogAddTaskBinding
 import com.taskmanager.myapplication.di.Dependencies
 import com.taskmanager.myapplication.domain.models.Task
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class TaskActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityTaskBinding
+    lateinit var binding: DialogAddTaskBinding
 
     val taskListID by lazy { intent.getIntExtra(ARG_TASK_LIST_ID, 0)}
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityTaskBinding.inflate(layoutInflater)
+        binding = DialogAddTaskBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.add.setOnClickListener {
-            val title = binding.title.text.toString()
-            val desc = binding.desc.text.toString()
+        binding.createButton.setOnClickListener {
+            val title = binding.taskTitle.text.toString()
+            val desc = ""
             GlobalScope.launch {
-                Dependencies.taskRepository.addTask(Task(title, desc, taskListID))
+                Dependencies.taskRepository.addTask(Task(title, desc, 1, taskListID, favorite = false, completed = false))
             }
+            startActivity(
+                MainActivity.getIntent(this)
+            )
 
         }
     }
