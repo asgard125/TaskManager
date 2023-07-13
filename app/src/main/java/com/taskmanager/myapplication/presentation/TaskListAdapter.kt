@@ -60,7 +60,6 @@ class TaskListAdapter(private val hostListener: TaskListAdapterListener) : Recyc
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateData(newTasksList: List<Task>){
-        Log.d("data updated", "-----------------------------------------------------------")
         tasksList = newTasksList.toMutableList()
         notifyDataSetChanged()
     }

@@ -40,14 +40,13 @@ class TaskListFragment() : Fragment(), TaskListAdapterListener {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         binding.rv.adapter = adapter
-        if (requireArguments().getInt(ARG_TASK_LIST_ID) == 0){
+        if (requireArguments().getInt(ARG_TASK_LIST_ID) == -2){
             viewModel.getFavoriteTasks()
         }
-        else if (requireArguments().getInt(ARG_TASK_LIST_ID) == 1){
+        else if (requireArguments().getInt(ARG_TASK_LIST_ID) == -1){
             viewModel.getAllTasks()
         } else{
-            // todo (fix getting tasks by task list)
-            viewModel.getTasksFromTaskList(0)
+            viewModel.getTasksFromTaskList(requireArguments().getInt(ARG_TASK_LIST_ID))
         }
         viewModel.listOfTasks.observe(this) {
             adapter.updateData(it)

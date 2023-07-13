@@ -50,6 +50,13 @@ class MainViewModel: ViewModel() {
             taskRepository.deleteTask(task)
         }
     }
+
+    fun deleteTaskList(taskList: TaskList){
+        viewModelScope.launch {
+            taskListRepository.deleteTaskList(taskList)
+        }
+    }
+
     fun addTaskList(taskList: TaskList){
         viewModelScope.launch {
             taskListRepository.addTaskList(taskList)
