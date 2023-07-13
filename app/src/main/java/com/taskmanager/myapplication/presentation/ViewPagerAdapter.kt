@@ -10,7 +10,8 @@ class ViewPagerAdapter(fragmentActivity: MainActivity) : FragmentStateAdapter(fr
 
     private var tasksLists: MutableList<TaskList> = mutableListOf()
     override fun getItemCount(): Int {
-        return tasksLists.size
+        // добавление 2 т.к есть список общих задач и избранных
+        return tasksLists.size + 2
     }
 
     override fun createFragment(position: Int): Fragment {

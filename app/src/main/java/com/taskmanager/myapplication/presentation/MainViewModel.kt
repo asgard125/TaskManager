@@ -22,16 +22,6 @@ class MainViewModel: ViewModel() {
         }
     }
 
-    fun getTaskByIdFromList(id: Int): Task?{
-        for (i in 0 ..(listOfTasks.value?.size ?: 0)){
-            if (listOfTasks.value?.get(i)?.id == id) {
-                return listOfTasks.value?.get(i)
-            }
-            Log.d("чето произошло", "чето произошло")
-        }
-        return null
-    }
-
     fun getTasksFromTaskList(id: Int) {
         viewModelScope.launch {
             listOfTasks = taskRepository.getTasksFromTaskList(id)

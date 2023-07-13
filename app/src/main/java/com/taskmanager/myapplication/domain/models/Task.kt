@@ -8,7 +8,7 @@ data class Task(
     @PrimaryKey(autoGenerate = true)
     val id: Int? = null,
     val name: String,
-    val description: String,
+    var description: String,
     val taskListId: Int,
     var favorite: Boolean,
     var completed: Boolean

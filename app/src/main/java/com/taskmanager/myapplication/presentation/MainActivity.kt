@@ -32,8 +32,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var vm: MainViewModel
     lateinit var dialog: BottomSheetDialog
     var tabIndex: Int = 0
-    var added_tabs_size: Int = 0
-
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,10 +45,6 @@ class MainActivity : AppCompatActivity() {
 
         Dependencies.taskRepository
 
-        vm.listOfTaskLists.observe(this){
-            updateTabs(it)
-            vpAdapter.updateData(it)
-        }
         fun showBottomSheetDialogAddTask() {
             val dialogView = layoutInflater.inflate(R.layout.dialog_add_task, null)
             dialog = BottomSheetDialog(this, R.style.AddTaskDialogTheme)
@@ -60,42 +54,18 @@ class MainActivity : AppCompatActivity() {
             dialog.findViewById<Button>(R.id.create_task_button)?.setOnClickListener {
                 val title = dialog.findViewById<EditText>(R.id.taskTitle)?.text.toString()
                 val desc = ""
-                var curr_list_ind = binding.tabLayout.getTabAt(tabIndex)?.id
-                if (curr_list_ind == null){
-                    curr_list_ind = -1
-                }
                 GlobalScope.launch {
-                    vm.addTask(Task(name = title, description = desc, taskListId = curr_list_ind, favorite = false, completed = false))
+                    vm.addTask(Task(name = title, description = desc, taskListId = 0, favorite = false, completed = false))
                 }
                 dialog.dismiss()
             }
 
         }
 
-        fun showBottomSheetDialogAddList() {
-            val dialogView = layoutInflater.inflate(R.layout.dialog_add_list, null)
-            dialog = BottomSheetDialog(this, R.style.AddTaskDialogTheme)
-            dialog.setContentView(dialogView)
-            dialog.show()
-
-            dialog.findViewById<Button>(R.id.create_list_button)?.setOnClickListener {
-                val title = dialog.findViewById<EditText>(R.id.listTitle)?.text.toString()
-                GlobalScope.launch {
-                    vm.addTaskList(TaskList(name = title))
-                }
-                dialog.dismiss()
-            }
-
-        }
 
         binding.addTaskButton.setOnClickListener {
             showBottomSheetDialogAddTask()
         }
-
-        binding.addListButton.setOnClickListener {
-            showBottomSheetDialogAddList()
-        }
-
 
 
         binding.viewPager.apply {
@@ -125,19 +95,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-    }
-
-    fun updateTabs(tasksLists: List<TaskList>){
-        for (i in 2..added_tabs_size + 1){
-            binding.tabLayout.getTabAt(2)?.let { binding.tabLayout.removeTab(it) }
-        }
-        added_tabs_size = tasksLists.size
-        for (i in 1..added_tabs_size){
-            val newTab = binding.tabLayout.newTab()
-            newTab.id = tasksLists[i - 1].id!!
-            newTab.text = tasksLists[i - 1].name
-            binding.tabLayout.addTab(newTab)
-        }
     }
 
     fun startTaskActivity(id: Int){

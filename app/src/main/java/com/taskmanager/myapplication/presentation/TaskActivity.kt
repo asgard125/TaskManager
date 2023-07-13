@@ -4,12 +4,12 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.widget.Button
+import android.widget.EditText
 import androidx.lifecycle.ViewModelProvider
-import com.taskmanager.myapplication.databinding.ActivityMainBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.taskmanager.myapplication.R
 import com.taskmanager.myapplication.databinding.ActivityTaskBinding
-import com.taskmanager.myapplication.databinding.DialogAddTaskBinding
-import com.taskmanager.myapplication.di.Dependencies
 import com.taskmanager.myapplication.domain.models.Task
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -20,24 +20,41 @@ class TaskActivity : AppCompatActivity() {
     lateinit var binding: ActivityTaskBinding
 
     val taskID by lazy { intent.getIntExtra(ARG_TASK_ID, 0)}
+    lateinit var task: Task
+    lateinit var dialog: BottomSheetDialog
+    lateinit var vm: TaskViewModel
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var vm = ViewModelProvider(this)[MainViewModel::class.java]
+        vm = ViewModelProvider(this)[TaskViewModel::class.java]
         binding = ActivityTaskBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        var task = vm.getTaskByIdFromList(taskID)
-        if (task != null) {
-            Log.d("task name----------", task.name)
-        }else{
-            Log.d("хуево----------", "хуево")
+        vm.getTaskById(taskID)
+        vm.task.observe(this) {
+            updateTaskData(it)
         }
-        if (task != null) {
-            binding.taskTitle.setText(task.name)
+
+        fun showBottomSheetDialogChangeDesc() {
+            val dialogView = layoutInflater.inflate(R.layout.dialog_add_description, null)
+            dialog = BottomSheetDialog(this, R.style.AddTaskDialogTheme)
+            dialog.setContentView(dialogView)
+            dialog.show()
+
+            dialog.findViewById<Button>(R.id.change_desc_button)?.setOnClickListener {
+                task.description = dialog.findViewById<EditText>(R.id.taskDescription)?.text.toString()
+                GlobalScope.launch {
+                    vm.changeTask(task)
+                }
+                dialog.dismiss()
+            }
+
         }
-        if (task != null) {
-            binding.taskDescription.setText(task.description)
+
+        binding.taskDescription.setOnClickListener{
+            showBottomSheetDialogChangeDesc()
         }
+
 
     }
     companion object {
@@ -47,5 +64,10 @@ class TaskActivity : AppCompatActivity() {
             intent.putExtra(ARG_TASK_ID, id)
             return intent
         }
+    }
+    fun updateTaskData(taskData: List<Task>){
+        task = taskData[0]
+        binding.taskTitle.text = task.name
+        binding.taskDescription.text = task.description
     }
 }

@@ -22,8 +22,8 @@ class TaskRepositoryImpl(private val taskDao: TaskDao) : TaskRepository {
         return taskDao.getAllTasks()
     }
 
-    override fun getTaskById(id: Int): Task? {
-        return taskDao.getTaskById(id).value?.get(0)
+    override fun getTaskById(id: Int): LiveData<List<Task>> {
+        return taskDao.getTaskById(id)
     }
     override fun getTasksFromTaskList(id: Int): LiveData<List<Task>> {
         return taskDao.getTasksFromTaskList(id)

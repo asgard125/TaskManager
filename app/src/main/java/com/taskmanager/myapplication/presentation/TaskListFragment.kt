@@ -2,6 +2,7 @@ package com.taskmanager.myapplication.presentation
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -45,10 +46,8 @@ class TaskListFragment() : Fragment(), TaskListAdapterListener {
         else if (requireArguments().getInt(ARG_TASK_LIST_ID) == 1){
             viewModel.getAllTasks()
         } else{
-            var listInd = viewModel.listOfTaskLists.value?.get(requireArguments().getInt(ARG_TASK_LIST_ID) - 2)?.id
-            if (listInd != null){
-                viewModel.getTasksFromTaskList(listInd)
-            }
+            // todo (fix getting tasks by task list)
+            viewModel.getTasksFromTaskList(0)
         }
         viewModel.listOfTasks.observe(this) {
             adapter.updateData(it)
