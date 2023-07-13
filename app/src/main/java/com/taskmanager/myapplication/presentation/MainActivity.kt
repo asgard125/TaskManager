@@ -124,17 +124,11 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
-                return
             }
         })
 
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    override fun onResume(){
-        super.onResume()
-        vpAdapter.notifyDataSetChanged()
-    }
     fun updateTabs(tasksLists: List<TaskList>){
         for (i in 2..added_tabs_size + 1){
             binding.tabLayout.getTabAt(2)?.let { binding.tabLayout.removeTab(it) }
@@ -153,14 +147,17 @@ class MainActivity : AppCompatActivity() {
             TaskActivity.getIntent(this, id))
     }
 
-    // удаляет список и все задачи в нём.
+    // удаляет список
     fun removeList(pos: Int){
         if (pos > 1) {
             var task_list = vm.listOfTaskLists.value?.get(pos - 2)
-            var tasks = vm.listOfTasks.value
             if (task_list != null) {
                 vm.deleteTaskList(task_list)
                 tabIndex = 1
+                vpAdapter = ViewPagerAdapter(this)
+                binding.viewPager.apply {
+                    adapter = vpAdapter
+                }
             }
         }
     }

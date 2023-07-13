@@ -53,6 +53,22 @@ class TaskListFragment() : Fragment(), TaskListAdapterListener {
         }
 
     }
+    override fun onStart() {
+        super.onStart()
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        binding.rv.adapter = adapter
+        if (requireArguments().getInt(ARG_TASK_LIST_ID) == -2){
+            viewModel.getFavoriteTasks()
+        }
+        else if (requireArguments().getInt(ARG_TASK_LIST_ID) == -1){
+            viewModel.getAllTasks()
+        } else{
+            viewModel.getTasksFromTaskList(requireArguments().getInt(ARG_TASK_LIST_ID))
+        }
+        viewModel.listOfTasks.observe(this) {
+            adapter.updateData(it)
+        }
+    }
 
     companion object {
         private const val ARG_TASK_LIST_ID = "task_list_id"
