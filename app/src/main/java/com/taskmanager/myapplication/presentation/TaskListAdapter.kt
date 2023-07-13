@@ -18,11 +18,6 @@ class TaskListAdapter(private val hostListener: TaskListAdapterListener) : Recyc
         fun bind(task: Task) {
                 binding.apply {
                     taskName.text = task.name
-                    if (task.completed) {
-                        favoriteButton.setImageResource(R.drawable.baseline_white_star_24)
-                    } else {
-                        favoriteButton.setImageResource(R.drawable.baseline_white_star_border_24)
-                    }
                     completeCheckbox.isChecked = task.completed
                     completeCheckbox.setOnClickListener {
                         task.completed = !task.completed
@@ -32,6 +27,11 @@ class TaskListAdapter(private val hostListener: TaskListAdapterListener) : Recyc
                     favoriteButton.setOnClickListener {
                         task.favorite = !task.favorite
                         hostListener.onChanged(task)
+                    }
+                    if (task.favorite) {
+                        favoriteButton.setImageResource(R.drawable.baseline_white_star_24)
+                    } else {
+                        favoriteButton.setImageResource(R.drawable.baseline_white_star_border_24)
                     }
 
                     deleteButton.setOnClickListener {

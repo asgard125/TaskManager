@@ -2,18 +2,14 @@ package com.taskmanager.myapplication.presentation
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.taskmanager.myapplication.databinding.FragmentTaskListBinding
 import com.taskmanager.myapplication.domain.models.Task
-import java.util.*
 
 
 class TaskListFragment() : Fragment(), TaskListAdapterListener {
@@ -49,9 +45,12 @@ class TaskListFragment() : Fragment(), TaskListAdapterListener {
         else if (requireArguments().getInt(ARG_TASK_LIST_ID) == 1){
             viewModel.getAllTasks()
         } else{
-            viewModel.getTasksFromTaskList(requireArguments().getInt(ARG_TASK_LIST_ID) - 1)
+            var listInd = viewModel.listOfTaskLists.value?.get(requireArguments().getInt(ARG_TASK_LIST_ID) - 2)?.id
+            if (listInd != null){
+                viewModel.getTasksFromTaskList(listInd)
+            }
         }
-        viewModel.list.observe(this) {
+        viewModel.listOfTasks.observe(this) {
             adapter.updateData(it)
         }
 
@@ -75,18 +74,14 @@ class TaskListFragment() : Fragment(), TaskListAdapterListener {
         _binding = null
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     override fun onChanged(task: Task) {
-        // todo
+        viewModel.changeTask(task)
     }
     override fun onDelete(task: Task) {
         viewModel.deleteTask(task)
     }
 
     override fun onClick(id: Int) {
-        // todo
+        hostActivity.startTaskActivity(id)
     }
 }

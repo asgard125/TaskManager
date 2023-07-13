@@ -15,8 +15,15 @@ class TaskRepositoryImpl(private val taskDao: TaskDao) : TaskRepository {
     override fun deleteTask(task: Task) {
         taskDao.deleteTask(task)
     }
+    override fun changeTask(task: Task) {
+        taskDao.changeTask(task)
+    }
     override fun getAllTasks(): LiveData<List<Task>> {
-    return taskDao.getAllTasks()
+        return taskDao.getAllTasks()
+    }
+
+    override fun getTaskById(id: Int): Task? {
+        return taskDao.getTaskById(id).value?.get(0)
     }
     override fun getTasksFromTaskList(id: Int): LiveData<List<Task>> {
         return taskDao.getTasksFromTaskList(id)

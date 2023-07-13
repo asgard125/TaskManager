@@ -2,7 +2,6 @@ package com.taskmanager.myapplication.presentation
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.taskmanager.myapplication.di.Dependencies
@@ -11,26 +10,37 @@ import com.taskmanager.myapplication.domain.models.TaskList
 import kotlinx.coroutines.launch
 
 class MainViewModel: ViewModel() {
-//    val list = MutableLiveData<List<Task>>()
-    var list: LiveData<List<Task>> = Dependencies.taskRepository.getAllTasks()
+
+    var listOfTasks: LiveData<List<Task>> = Dependencies.taskRepository.getAllTasks()
+    var listOfTaskLists: LiveData<List<TaskList>> = Dependencies.taskListRepository.getAllTaskLists()
 
     private val taskRepository = Dependencies.taskRepository
+    private val taskListRepository = Dependencies.taskListRepository
     fun getAllTasks(){
         viewModelScope.launch {
-            list = taskRepository.getAllTasks()
+            listOfTasks = taskRepository.getAllTasks()
         }
-        Log.d("obs", list.hasActiveObservers().toString())
+    }
+
+    fun getTaskByIdFromList(id: Int): Task?{
+        for (i in 0 ..(listOfTasks.value?.size ?: 0)){
+            if (listOfTasks.value?.get(i)?.id == id) {
+                return listOfTasks.value?.get(i)
+            }
+            Log.d("чето произошло", "чето произошло")
+        }
+        return null
     }
 
     fun getTasksFromTaskList(id: Int) {
         viewModelScope.launch {
-            list = taskRepository.getTasksFromTaskList(id)
+            listOfTasks = taskRepository.getTasksFromTaskList(id)
         }
     }
 
     fun getFavoriteTasks() {
         viewModelScope.launch {
-            list= taskRepository.getFavoriteTasks()
+            listOfTasks = taskRepository.getFavoriteTasks()
         }
     }
 
@@ -39,15 +49,20 @@ class MainViewModel: ViewModel() {
             taskRepository.addTask(task)
         }
     }
-    fun changeTask(){
+    fun changeTask(task: Task){
         viewModelScope.launch {
-//            list.postValue(taskRepository.getFavoriteTasks())
+            taskRepository.changeTask(task)
         }
     }
 
     fun deleteTask(task: Task){
         viewModelScope.launch {
             taskRepository.deleteTask(task)
+        }
+    }
+    fun addTaskList(taskList: TaskList){
+        viewModelScope.launch {
+            taskListRepository.addTaskList(taskList)
         }
     }
 }

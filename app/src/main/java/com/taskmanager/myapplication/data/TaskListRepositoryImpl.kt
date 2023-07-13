@@ -1,26 +1,29 @@
 package com.taskmanager.myapplication.data
 
+import androidx.lifecycle.LiveData
 import com.taskmanager.myapplication.data.room.dao.TaskListDao
 import com.taskmanager.myapplication.domain.TaskListRepository
 import com.taskmanager.myapplication.domain.models.TaskList
 
 class TaskListRepositoryImpl(private val taskListDao: TaskListDao) : TaskListRepository {
 
-    override suspend fun addTaskList(taskList: TaskList) {
+    override fun addTaskList(taskList: TaskList) {
         taskListDao.addTaskList(taskList)
     }
 
-    override suspend fun deleteTaskList(taskList: TaskList) {
+    override fun deleteTaskList(taskList: TaskList) {
         taskListDao.deleteTaskList(taskList)
     }
 
-    override suspend fun updateTaskList(taskList: TaskList) {
+    override fun updateTaskList(taskList: TaskList) {
         taskListDao.updateTaskList(taskList)
     }
 
-    override suspend fun getAllTaskLists(): List<TaskList> {
-        return taskListDao.getAllTaskLists().map {
-            TaskList(it.id, it.name)
-        }
+    override fun getAllTaskLists(): LiveData<List<TaskList>> {
+        return taskListDao.getAllTaskLists()
+    }
+
+    override fun getTaskListById(id: Int): LiveData<List<TaskList>> {
+        return taskListDao.getTaskListById(id)
     }
 }
