@@ -1,10 +1,15 @@
 package com.taskmanager.myapplication.domain.models
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "Task")
 data class Task(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int? = null,
     val name: String,
     val description: String,
     val taskListId: Int,
-    val id: Int,
     var favorite: Boolean,
     var completed: Boolean
 )

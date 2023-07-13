@@ -39,7 +39,7 @@ class TaskListAdapter(private val hostListener: TaskListAdapterListener) : Recyc
                     }
 
                     root.setOnClickListener {
-                        hostListener.onClick(task.id)
+                        task.id?.let { it1 -> hostListener.onClick(it1) }
                     }
                 }
         }
@@ -59,8 +59,8 @@ class TaskListAdapter(private val hostListener: TaskListAdapterListener) : Recyc
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(newTasksList:List<Task>){
-        Log.d("data updated", "data updated")
+    fun updateData(newTasksList: List<Task>){
+        Log.d("data updated", "-----------------------------------------------------------")
         tasksList = newTasksList.toMutableList()
         notifyDataSetChanged()
     }

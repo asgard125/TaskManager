@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.taskmanager.myapplication.databinding.FragmentTaskListBinding
@@ -24,7 +23,7 @@ class TaskListFragment() : Fragment(), TaskListAdapterListener {
 
     lateinit var  hostActivity: MainActivity
     private val adapter: TaskListAdapter = TaskListAdapter(this)
-    private val viewModel = ViewModelProvider(this)[TaskListViewModel::class.java]
+    private lateinit var viewModel: MainViewModel
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -42,19 +41,20 @@ class TaskListFragment() : Fragment(), TaskListAdapterListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         binding.rv.adapter = adapter
-        Log.d("view ", "created")
-        val taskListId = requireArguments().getInt(ARG_TASK_LIST_ID)
-        if (taskListId == -1){
+        if (requireArguments().getInt(ARG_TASK_LIST_ID) == 0){
             viewModel.getFavoriteTasks()
-            viewModel.list.value?.let { adapter.updateData(it) }
-        } else if (taskListId == 0){
-            viewModel.getAllTasks()
-            viewModel.list.value?.let { adapter.updateData(it) }
-        } else{
-            viewModel.getTasksFromTaskList(taskListId)
-            viewModel.list.value?.let { adapter.updateData(it) }
         }
+        else if (requireArguments().getInt(ARG_TASK_LIST_ID) == 1){
+            viewModel.getAllTasks()
+        } else{
+            viewModel.getTasksFromTaskList(requireArguments().getInt(ARG_TASK_LIST_ID) - 1)
+        }
+        viewModel.list.observe(this) {
+            adapter.updateData(it)
+        }
+
     }
 
     companion object {
@@ -73,6 +73,10 @@ class TaskListFragment() : Fragment(), TaskListAdapterListener {
     override fun onDetach() {
         super.onDetach()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     override fun onChanged(task: Task) {

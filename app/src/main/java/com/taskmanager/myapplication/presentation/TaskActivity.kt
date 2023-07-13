@@ -26,7 +26,7 @@ class TaskActivity : AppCompatActivity() {
             val title = binding.taskTitle.text.toString()
             val desc = ""
             GlobalScope.launch {
-                Dependencies.taskRepository.addTask(Task(title, desc, 1, taskListID, favorite = false, completed = false))
+                Dependencies.taskRepository.addTask(Task(name=title, description = desc, taskListId = taskListID, favorite = false, completed = false))
             }
             startActivity(
                 MainActivity.getIntent(this)

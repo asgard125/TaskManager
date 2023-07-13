@@ -1,10 +1,11 @@
 package com.taskmanager.myapplication.domain.models
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "TaskList")
 data class TaskList(
-    var name: String,
-    val id: Int = UNDEFINED_ID
-) {
-    companion object {
-        const val UNDEFINED_ID = 0
-    }
-}
+    @PrimaryKey(autoGenerate = true)
+    val id: Int? = null,
+    var name: String
+)

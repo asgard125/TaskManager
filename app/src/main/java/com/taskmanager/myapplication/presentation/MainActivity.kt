@@ -4,10 +4,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -43,6 +41,8 @@ class MainActivity : AppCompatActivity() {
         vm = ViewModelProvider(this)[MainViewModel::class.java]
         vpAdapter = ViewPagerAdapter(this)
 
+        Dependencies.taskRepository
+
         fun showBottomSheetDialog() {
             val dialogView = layoutInflater.inflate(R.layout.dialog_add_task, null)
             dialog = BottomSheetDialog(this, R.style.AddTaskDialogTheme)
@@ -52,18 +52,19 @@ class MainActivity : AppCompatActivity() {
             dialog.findViewById<Button>(R.id.create_button)?.setOnClickListener {
                 val title = dialog.findViewById<EditText>(R.id.taskTitle)?.text.toString()
                 val desc = ""
-                Log.d("TAG", title)
                 GlobalScope.launch {
-                    Dependencies.taskRepository.addTask(Task(title, desc, 0, 1, favorite = false, completed = false))
+                    vm.addTask(Task(name = title, description = desc, taskListId = 0, favorite = false, completed = false))
                 }
+                get_tasks_by_tab_index(tabIndex)
+                dialog.dismiss()
             }
+
         }
 
         binding.addTaskListButton.setOnClickListener {
             showBottomSheetDialog()
         }
 
-        vm.getAllTAskList()
 
         binding.viewPager.apply {
             adapter = vpAdapter
@@ -71,6 +72,8 @@ class MainActivity : AppCompatActivity() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     binding.tabLayout.getTabAt(position)!!.select()
+                    tabIndex = position
+                    get_tasks_by_tab_index(tabIndex)
                 }
             })
         }
@@ -96,7 +99,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        vm.getAllTAskList()
+        get_tasks_by_tab_index(tabIndex)
+    }
+    fun get_tasks_by_tab_index(tab_index: Int){
+        if (tab_index == 0){
+            vm.getFavoriteTasks()
+        }
+        else if (tab_index == 1){
+            vm.getAllTasks()
+        } else{
+            vm.getTasksFromTaskList(tab_index - 1)
+        }
     }
 
     companion object {

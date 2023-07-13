@@ -1,11 +1,12 @@
 package com.taskmanager.myapplication.domain
 
+import androidx.lifecycle.LiveData
 import com.taskmanager.myapplication.domain.models.Task
 
 interface TaskRepository {
-    suspend fun addTask(task: Task)
-    suspend fun deleteTask(task: Task)
-    suspend fun getAllTasks(): List<Task>
-    suspend fun getTasksFromTaskList(id: Int): List<Task>
-    suspend fun getFavoriteTasks(): List<Task>
+    fun addTask(task: Task)
+     fun deleteTask(task: Task)
+     fun getAllTasks(): LiveData<List<Task>>
+    fun getTasksFromTaskList(id: Int): LiveData<List<Task>>
+    fun getFavoriteTasks(): LiveData<List<Task>>
 }

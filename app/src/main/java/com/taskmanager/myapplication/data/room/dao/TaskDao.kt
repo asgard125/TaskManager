@@ -1,21 +1,22 @@
 package com.taskmanager.myapplication.data.room.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.taskmanager.myapplication.data.room.entity.TaskEntity
+import com.taskmanager.myapplication.domain.models.Task
 
 @Dao
 abstract class TaskDao {
     @Insert
-    abstract suspend fun addTask(task: TaskEntity)
+    abstract fun addTask(task: Task)
     @Delete
-    abstract suspend fun deleteTask(task: TaskEntity)
+    abstract fun deleteTask(task: Task)
     @Query("SELECT * FROM Task")
-    abstract suspend fun getAllTasks(): List<TaskEntity>
+    abstract fun getAllTasks(): LiveData<List<Task>>
     @Query("SELECT * FROM Task WHERE taskListId = :taskListId")
-    abstract suspend fun getTasksFromTaskList(taskListId: Int): List<TaskEntity>
+    abstract fun getTasksFromTaskList(taskListId: Int): LiveData<List<Task>>
     @Query("SELECT * FROM Task WHERE favorite = true")
-    abstract suspend fun getFavoriteTasks(): List<TaskEntity>
+    abstract fun getFavoriteTasks(): LiveData<List<Task>>
 }
